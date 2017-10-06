@@ -6,17 +6,32 @@
 	  
 	  	font-family: sans-serif;
 	  	font-size: 12px;
+	  	padding:1%;
+	  	padding-top:2%;
+	  }
+	  #msgBox {
+	  	padding:20px;
+	  	background-color:#696969;
+	  	color:white;
+	  	position: fixed;
+		  top: 50%;
+		  left: 50%;
+		  /* bring your own prefixes */
+		  transform: translate(-50%, -50%);
+		  border-radius: 5px;
+		  display:none;
+	  
 	  }
 	  input[type="text"] {
 		  display: block;
 		  margin: 0;
-		  width: 1000px;
+		  width: 86%;
 		  
 		  appearance: none;
 		  box-shadow: none;
 		  border-radius: 5px;
   
-		  padding: 10px;
+		  padding: 5px;
 		  border: solid 2px #c9c9c9;
 		  transition: border 0.3s;
 		  float:left;
@@ -30,13 +45,13 @@
 		}
 		.break {
 			border-top: solid 1px #c9c9c9;
-			width: 1120px;
-			margin-top:10px;
-			margin-bottom:10px;
+			width: 99%;
+			margin-top:20px;
+			margin-bottom:20px;
 		}
 		.btn {
-			float:left;
-			width: 100px;
+			float:right;
+			width: 10%;
 			background-color:#c9c9c9;
 			color:white;
 			padding:10px;
@@ -55,6 +70,18 @@
 		.title {
 			
 		}
+		@media only screen and (max-width: 800px) {
+			input[type="text"] {
+			  display: block;
+			  margin: 0;
+			  width: 79%;
+			}
+			.btn {
+				float:left;
+				width: 12%;
+			}
+		
+		}
 
 	  </style>
 	  
@@ -65,14 +92,23 @@
 		$(document).ready(function(){
 			
 			var inputStr = "";
+			
+			$("#utext").focus();
 		
 			$("input[type='text']").click(function () {
 			   $(this).select();
+			   
+			   if ($(this).attr('id')!="utext") {
+			   		document.execCommand('copy');
+					showMsg();
+				}
 			});
 			
 			function bitly(txtin, locin) {
 				var bitStr = txtin;
-				$.ajax({
+				
+				//clean up url
+				/*$.ajax({
 					url: "https://api-ssl.bitly.com/v3/shorten?format=txt&access_token=0d4889ddb839c2f7391f453003538cb419469a23&longUrl="+bitStr,
 					cache: false
 				})
@@ -80,12 +116,35 @@
 					//$( ".row1" ).append( html );
 					//console.log("done:"+html);
 					$("#"+locin+"bitlytext").val(html);
+				});*/
+				
+				
+				$.ajax({
+					url: "https://api-ssl.bitly.com/v3/shorten?format=txt&access_token=0d4889ddb839c2f7391f453003538cb419469a23&longUrl="+bitStr,
+					success: function (response) {
+						$("#"+locin+"bitlytext").val(response);
+					},
+					error: function (jqXHR, exception) {
+						console.log(jqXHR);
+					},
 				});
+
 			}
+			$(document).keypress(function(e) {
+				if(e.which == 13) {
+					utextpro();
+				}
+			});
 			
 			$("#uenter").click(function(e) {
 				e.preventDefault();
-				//alert($("#utext").val());
+				utextpro();
+			});
+			function utextpro() {
+			
+			if ($("#utext").val()=="") {
+				$("#utext").focus();
+			} else {
 				
 				inputStr =  $("#utext").val();
 				
@@ -98,18 +157,65 @@
 				var str = inputStr;
 				var res = str.split("?");
 				
-				
 				var str2 = res[0];
 				var res2 = str2.replace("https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "http://www.channelnewsasia.com/");
+				res2 = res2.replace("cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "www.channelnewsasia.com/");
+				
+				//if no http, append
+				var frontStr = res2.substring(0,7);
+				if (frontStr!="http://") {
+					res2 =  "http://" + res2;
+				}
+				
+				
+				res2 = encodeURI(res2);
 
 				$("#cnatext").val(res2);
 				bitly(res2,"cna");
-				$("#fbtext").val(res2+"?cid=FBcna");
-				bitly(res2+"?cid=FBcna","fb");
 				
+				var fbTxt = res2+"?cid=FBcna";
+				$("#fbtext").val(fbTxt);
+				bitly(fbTxt,"fb");
 				
+				var twTxt = res2+"?cid=TWTcna";
+				$("#twtext").val(twTxt);
+				bitly(twTxt,"tw");
+				
+				var fbiaTxt = res2+"?cid=FBia";
+				$("#fbiatext").val(fbiaTxt);
+				bitly(fbiaTxt,"fbia");
+				
+				}
 		
+			}
+			
+			$(".btn").click(function(e) {
+				//$(this).select();
+				if ($(this).attr('id')!="uenter") {
+				
+					var str = $(this).attr('id');
+					var res = str.replace("copy","");
+						
+					if ($("#" + res + "text").val()!="") {
+						
+						//alert("click:"+res);
+						$("#" + res + "text").select();
+						document.execCommand('copy');
+						showMsg();
+						
+					
+					}
+					
+				}
+			
 			});
+			
+			function showMsg() {
+				$("#msgBox").show();
+				setTimeout(function() {
+					$("#msgBox").fadeOut();
+				}, 400);
+			}
 			
 	
 			function nl2br (str, is_xhtml) {   
@@ -140,8 +246,10 @@
 	  </head>
 	  <body>
 	  
+	  	<div id="msgBox">URL copied!</div>
 	
-		<input type="text" name="utext" id="utext" value="https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/news/singapore/bike-sharing-operators-authorities-move-to-cut-irresponsible-use-9282464?view=fragmentPreview&p13n_test=true&p13n_testcontext=0">
+		<!--input type="text" name="utext" id="utext" value="https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/news/singapore/bike-sharing-operators-authorities-move-to-cut-irresponsible-use-9282464?view=fragmentPreview&p13n_test=true&p13n_testcontext=0"-->
+		<input type="text" name="utext" id="utext">
 		<div class="btn" id="uenter">ENTER</div>
 		<div class="clear"></div>
 		
@@ -149,7 +257,7 @@
 		
 		<div class="title">CNA</div>
 		<input type="text" name="cnatext" id="cnatext" readonly>
-		<div class="btn" id="bitlycopy">COPY</div>
+		<div class="btn" id="cnacopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="title">CNA (BIT.LY)</div>
@@ -157,15 +265,41 @@
 		<div class="btn" id="cnabitlycopy">COPY</div>
 		<div class="clear"></div>
 		
+		<div class="break"></div>
+		
 		
 		<div class="title">FACEBOOK</div>
 		<input type="text" name="fbtext" id="fbtext" readonly>
-		<div class="btn" id="bitlycopy">COPY</div>
+		<div class="btn" id="fbcopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="title">FACEBOOK (BIT.LY)</div>
 		<input type="text" name="fbbitlytext" id="fbbitlytext" readonly>
 		<div class="btn" id="fbbitlycopy">COPY</div>
+		<div class="clear"></div>
+		
+		<div class="break"></div>
+		
+		<div class="title">TWITTER</div>
+		<input type="text" name="twtext" id="twtext" readonly>
+		<div class="btn" id="twcopy">COPY</div>
+		<div class="clear"></div>
+		
+		<div class="title">TWITTER (BIT.LY)</div>
+		<input type="text" name="twbitlytext" id="twbitlytext" readonly>
+		<div class="btn" id="twbitlycopy">COPY</div>
+		<div class="clear"></div>
+		
+		<div class="break"></div>
+		
+		<div class="title">FACEBOOK IA</div>
+		<input type="text" name="fbiatext" id="fbiatext" readonly>
+		<div class="btn" id="fbiacopy">COPY</div>
+		<div class="clear"></div>
+		
+		<div class="title">FACEBOOK IA (BIT.LY)</div>
+		<input type="text" name="fbiabitlytext" id="fbiabitlytext" readonly>
+		<div class="btn" id="fbiabitlycopy">COPY</div>
 		<div class="clear"></div>
 	  
 
