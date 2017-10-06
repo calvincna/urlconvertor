@@ -46,15 +46,15 @@
 		.break {
 			border-top: solid 1px #c9c9c9;
 			width: 99%;
-			margin-top:20px;
-			margin-bottom:20px;
+			margin-top:15px;
+			margin-bottom:15px;
 		}
 		.btn {
 			float:right;
 			width: 10%;
 			background-color:#c9c9c9;
 			color:white;
-			padding:10px;
+			padding:8px;
 			margin-left:10px;
 			border-radius: 5px;
 			text-align: center;
@@ -90,17 +90,61 @@
 		<script type="text/javascript">
 	
 		$(document).ready(function(){
+		
+				/*
+				
+				https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/news/singapore/bike-sharing-operators-authorities-move-to-cut-irresponsible-use-9282464?view=fragmentPreview&p13n_test=true&p13n_testcontext=0
+				
+				<input type="text" name="utext" id="utext" value="https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/news/singapore/bike-sharing-operators-authorities-move-to-cut-irresponsible-use-9282464?view=fragmentPreview&p13n_test=true&p13n_testcontext=0">
+				*/
 			
 			var inputStr = "";
+			var keyVal = "";
 			
 			$("#utext").focus();
 		
+			
+			
+			$(document).keypress(function(e) {
+				if(e.which == 13) {
+					utextpro();
+				}
+			});
+			
+			
+			//$("#utext").change(function() {
+				//$(".txtinput").val("");
+				//console.log("c1");
+			//});
+			
+			
+			$("#utext").keydown(function(e){
+				keyVal = $("#utext").val();
+			
+			});
+			$("#utext").keyup(function(e){
+				if ($("#utext").val()!=keyVal) {
+					$(".txtinput").val("");
+				}
+			
+				/*
+				if(e.which != 13) {
+					$(".txtinput").val("");
+				}
+				*/
+			});
+			
 			$("input[type='text']").click(function () {
 			   $(this).select();
 			   
 			   if ($(this).attr('id')!="utext") {
-			   		document.execCommand('copy');
-					showMsg();
+			   		if ($(this).val()=="") {
+			   	 		//$("#utext").focus();
+			   	 		$("#utext").select();
+			   		} else {
+			   			document.execCommand('copy');
+						showMsg();
+					}
 				}
 			});
 			
@@ -130,11 +174,7 @@
 				});
 
 			}
-			$(document).keypress(function(e) {
-				if(e.which == 13) {
-					utextpro();
-				}
-			});
+			
 			
 			$("#uenter").click(function(e) {
 				e.preventDefault();
@@ -142,48 +182,49 @@
 			});
 			function utextpro() {
 			
-			if ($("#utext").val()=="") {
-				$("#utext").focus();
-			} else {
+				if ($("#utext").val()=="") {
+					$("input[type='text']").val("");
+					$("#utext").focus();
+				} else {
 				
-				inputStr =  $("#utext").val();
+					inputStr =  $("#utext").val();
 				
-				$("input[type='text']").val("");
-				$("#utext").val(inputStr);
+					//$("input[type='text']").val("");
+					//$("#utext").val(inputStr);
+				
+					$(".txtinput").val("");
+				
+					//split ?
+					var str = inputStr;
+					var res = str.split("?");
+				
+					var str2 = res[0];
+					var res2 = str2.replace("https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "http://www.channelnewsasia.com/");
+					res2 = res2.replace("cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "www.channelnewsasia.com/");
+				
+					//if no http, append
+					var frontStr = res2.substring(0,7);
+					if (frontStr!="http://") {
+						res2 =  "http://" + res2;
+					}
 				
 				
-				
-				//split ?
-				var str = inputStr;
-				var res = str.split("?");
-				
-				var str2 = res[0];
-				var res2 = str2.replace("https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "http://www.channelnewsasia.com/");
-				res2 = res2.replace("cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "www.channelnewsasia.com/");
-				
-				//if no http, append
-				var frontStr = res2.substring(0,7);
-				if (frontStr!="http://") {
-					res2 =  "http://" + res2;
-				}
-				
-				
-				res2 = encodeURI(res2);
+					res2 = encodeURI(res2);
 
-				$("#cnatext").val(res2);
-				bitly(res2,"cna");
+					$("#cnatext").val(res2);
+					bitly(res2,"cna");
 				
-				var fbTxt = res2+"?cid=FBcna";
-				$("#fbtext").val(fbTxt);
-				bitly(fbTxt,"fb");
+					var fbTxt = res2+"?cid=FBcna";
+					$("#fbtext").val(fbTxt);
+					bitly(fbTxt,"fb");
 				
-				var twTxt = res2+"?cid=TWTcna";
-				$("#twtext").val(twTxt);
-				bitly(twTxt,"tw");
+					var twTxt = res2+"?cid=TWTcna";
+					$("#twtext").val(twTxt);
+					bitly(twTxt,"tw");
 				
-				var fbiaTxt = res2+"?cid=FBia";
-				$("#fbiatext").val(fbiaTxt);
-				bitly(fbiaTxt,"fbia");
+					var fbiaTxt = res2+"?cid=FBia";
+					$("#fbiatext").val(fbiaTxt);
+					bitly(fbiaTxt,"fbia");
 				
 				}
 		
@@ -248,7 +289,7 @@
 	  
 	  	<div id="msgBox">URL copied!</div>
 	
-		<!--input type="text" name="utext" id="utext" value="https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/news/singapore/bike-sharing-operators-authorities-move-to-cut-irresponsible-use-9282464?view=fragmentPreview&p13n_test=true&p13n_testcontext=0"-->
+
 		<input type="text" name="utext" id="utext">
 		<div class="btn" id="uenter">ENTER</div>
 		<div class="clear"></div>
@@ -256,12 +297,12 @@
 		<div class="break"></div>
 		
 		<div class="title">CNA</div>
-		<input type="text" name="cnatext" id="cnatext" readonly>
+		<input type="text" name="cnatext" class="txtinput" id="cnatext" readonly>
 		<div class="btn" id="cnacopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="title">CNA (BIT.LY)</div>
-		<input type="text" name="cnabitlytext" id="cnabitlytext" readonly>
+		<input type="text" name="cnabitlytext" class="txtinput" id="cnabitlytext" readonly>
 		<div class="btn" id="cnabitlycopy">COPY</div>
 		<div class="clear"></div>
 		
@@ -269,36 +310,36 @@
 		
 		
 		<div class="title">FACEBOOK</div>
-		<input type="text" name="fbtext" id="fbtext" readonly>
+		<input type="text" name="fbtext" class="txtinput" id="fbtext" readonly>
 		<div class="btn" id="fbcopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="title">FACEBOOK (BIT.LY)</div>
-		<input type="text" name="fbbitlytext" id="fbbitlytext" readonly>
+		<input type="text" name="fbbitlytext" class="txtinput" id="fbbitlytext" readonly>
 		<div class="btn" id="fbbitlycopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="break"></div>
 		
 		<div class="title">TWITTER</div>
-		<input type="text" name="twtext" id="twtext" readonly>
+		<input type="text" name="twtext" class="txtinput" id="twtext" readonly>
 		<div class="btn" id="twcopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="title">TWITTER (BIT.LY)</div>
-		<input type="text" name="twbitlytext" id="twbitlytext" readonly>
+		<input type="text" name="twbitlytext" class="txtinput" id="twbitlytext" readonly>
 		<div class="btn" id="twbitlycopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="break"></div>
 		
 		<div class="title">FACEBOOK IA</div>
-		<input type="text" name="fbiatext" id="fbiatext" readonly>
+		<input type="text" name="fbiatext" class="txtinput" id="fbiatext" readonly>
 		<div class="btn" id="fbiacopy">COPY</div>
 		<div class="clear"></div>
 		
 		<div class="title">FACEBOOK IA (BIT.LY)</div>
-		<input type="text" name="fbiabitlytext" id="fbiabitlytext" readonly>
+		<input type="text" name="fbiabitlytext" class="txtinput" id="fbiabitlytext" readonly>
 		<div class="btn" id="fbiabitlycopy">COPY</div>
 		<div class="clear"></div>
 	  
