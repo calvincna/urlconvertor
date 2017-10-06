@@ -1,0 +1,175 @@
+<html>
+	<head>
+	<meta charset='utf-8'>
+	  <style>
+	  body {
+	  
+	  	font-family: sans-serif;
+	  	font-size: 12px;
+	  }
+	  input[type="text"] {
+		  display: block;
+		  margin: 0;
+		  width: 1000px;
+		  
+		  appearance: none;
+		  box-shadow: none;
+		  border-radius: 5px;
+  
+		  padding: 10px;
+		  border: solid 2px #c9c9c9;
+		  transition: border 0.3s;
+		  float:left;
+		  margin-bottom:10px;
+		}
+		input[type="text"]:focus {
+		  outline: none;
+		}
+		#utext {
+			border: solid 2px #696969;
+		}
+		.break {
+			border-top: solid 1px #c9c9c9;
+			width: 1120px;
+			margin-top:10px;
+			margin-bottom:10px;
+		}
+		.btn {
+			float:left;
+			width: 100px;
+			background-color:#c9c9c9;
+			color:white;
+			padding:10px;
+			margin-left:10px;
+			border-radius: 5px;
+			text-align: center;
+			vertical-align: middle;
+			cursor:pointer;
+		}
+		#uenter {
+			background-color:#696969;
+		}
+		.clear {
+			clear:both;
+		}
+		.title {
+			
+		}
+
+	  </style>
+	  
+	  <script src="jquery-1.11.3.min.js"></script>
+
+		<script type="text/javascript">
+	
+		$(document).ready(function(){
+			
+			var inputStr = "";
+		
+			$("input[type='text']").click(function () {
+			   $(this).select();
+			});
+			
+			function bitly(txtin, locin) {
+				var bitStr = txtin;
+				$.ajax({
+					url: "https://api-ssl.bitly.com/v3/shorten?format=txt&access_token=0d4889ddb839c2f7391f453003538cb419469a23&longUrl="+bitStr,
+					cache: false
+				})
+				.done(function( html ) {
+					//$( ".row1" ).append( html );
+					//console.log("done:"+html);
+					$("#"+locin+"bitlytext").val(html);
+				});
+			}
+			
+			$("#uenter").click(function(e) {
+				e.preventDefault();
+				//alert($("#utext").val());
+				
+				inputStr =  $("#utext").val();
+				
+				$("input[type='text']").val("");
+				$("#utext").val(inputStr);
+				
+				
+				
+				//split ?
+				var str = inputStr;
+				var res = str.split("?");
+				
+				
+				var str2 = res[0];
+				var res2 = str2.replace("https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "http://www.channelnewsasia.com/");
+
+				$("#cnatext").val(res2);
+				bitly(res2,"cna");
+				$("#fbtext").val(res2+"?cid=FBcna");
+				bitly(res2+"?cid=FBcna","fb");
+				
+				
+		
+			});
+			
+	
+			function nl2br (str, is_xhtml) {   
+				var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<div class="spaceDiv"></div>' : '<div class="spaceDiv"></div>';    
+				return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1'+ breakTag +'$2');
+			}
+
+
+		   function getQueryVariable(variable)
+			{
+				   var query = window.location.search.substring(1);
+				   var vars = query.split("&");
+				   for (var i=0;i<vars.length;i++) {
+						   var pair = vars[i].split("=");
+						   if(pair[0] == variable){return pair[1];}
+				   }
+				   return(false);
+			}
+
+
+	   });
+   
+
+	
+
+	  </script>
+	  
+	  </head>
+	  <body>
+	  
+	
+		<input type="text" name="utext" id="utext" value="https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/news/singapore/bike-sharing-operators-authorities-move-to-cut-irresponsible-use-9282464?view=fragmentPreview&p13n_test=true&p13n_testcontext=0">
+		<div class="btn" id="uenter">ENTER</div>
+		<div class="clear"></div>
+		
+		<div class="break"></div>
+		
+		<div class="title">CNA</div>
+		<input type="text" name="cnatext" id="cnatext" readonly>
+		<div class="btn" id="bitlycopy">COPY</div>
+		<div class="clear"></div>
+		
+		<div class="title">CNA (BIT.LY)</div>
+		<input type="text" name="cnabitlytext" id="cnabitlytext" readonly>
+		<div class="btn" id="cnabitlycopy">COPY</div>
+		<div class="clear"></div>
+		
+		
+		<div class="title">FACEBOOK</div>
+		<input type="text" name="fbtext" id="fbtext" readonly>
+		<div class="btn" id="bitlycopy">COPY</div>
+		<div class="clear"></div>
+		
+		<div class="title">FACEBOOK (BIT.LY)</div>
+		<input type="text" name="fbbitlytext" id="fbbitlytext" readonly>
+		<div class="btn" id="fbbitlycopy">COPY</div>
+		<div class="clear"></div>
+	  
+
+
+
+	</body>
+</html>
