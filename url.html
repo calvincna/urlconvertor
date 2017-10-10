@@ -193,41 +193,56 @@
 				} else {
 				
 					inputStr =  $("#utext").val();
+					var res2 = inputStr;
 				
 					//$("input[type='text']").val("");
 					//$("#utext").val(inputStr);
 				
 					$(".txtinput").val("");
 				
-					//split ?
-					var str = inputStr;
-					var res = str.split("?");
-				
-					var str2 = res[0];
-					var res2 = str2.replace("https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "http://www.channelnewsasia.com/");
+					
+					res2 = res2.replace("https://cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "http://www.channelnewsasia.com/");
 					res2 = res2.replace("cmstudio.wcms.mediacorp.sg/blueprint/servlet/page/", "www.channelnewsasia.com/");
-				
+					
 					//if no http, append
 					var frontStr = res2.substring(0,7);
-					if (frontStr!="http://") {
+					var frontStr2 = res2.substring(0,8);
+					if ((frontStr!="http://")&&(frontStr2!="https://")) {
 						res2 =  "http://" + res2;
 					}
-				
+					
+					var frontStrC = res2.substring(0,31);
+					if (frontStrC=="http://www.channelnewsasia.com/") {
+						var res2Spilt = res2.split("?");
+						res2 = res2Spilt[0];
+					}
+					var frontStrC = res2.substring(0,27);
+					if (frontStrC=="http://channelnewsasia.com/") {
+						var res2Spilt = res2.split("?");
+						res2 = res2Spilt[0];
+					}
 				
 					res2 = encodeURI(res2);
 
 					$("#cnatext").val(res2);
 					bitly(res2,"cna");
+					
+					var addStr = "?";
+					
+					var res2Spilt = res2.split("?");
+					if (res2Spilt.length>1) {
+						addStr = "&";
+					}
 				
-					var fbTxt = res2+"?cid=FBcna";
+					var fbTxt = res2 + addStr + "cid=FBcna";
 					$("#fbtext").val(fbTxt);
 					bitly(fbTxt,"fb");
 				
-					var twTxt = res2+"?cid=TWTcna";
+					var twTxt = res2 + addStr + "cid=TWTcna";
 					$("#twtext").val(twTxt);
 					bitly(twTxt,"tw");
 				
-					var fbiaTxt = res2+"?cid=FBia";
+					var fbiaTxt = res2 + addStr + "cid=FBia";
 					$("#fbiatext").val(fbiaTxt);
 					bitly(fbiaTxt,"fbia");
 				
